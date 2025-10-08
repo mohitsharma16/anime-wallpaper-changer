@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"time"
 
-	"anime-wallpaper-changer/config"
+	"wallsync/config"
 )
 
 // WallhavenResponse represents the response from the Wallhaven API.
@@ -31,11 +31,20 @@ func GetRandomWallpaper(cfg *config.Config) (string, error) {
 	purity := calculateBitmask(cfg.Purity)
 	url := fmt.Sprintf("https://wallhaven.cc/api/v1/search?categories=%s&purity=%s&sorting=random&atleast=1920x1080&ratios=16x9", categories, purity)
 
-	resp, err := http.Get(url)
+	// Create HTTP client with timeout
+	client := &http.Client{
+		Timeout: 30 * time.Second,
+	}
+
+	resp, err := client.Get(url)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to fetch wallpaper from API: %w", err)
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("API returned status code %d", resp.StatusCode)
+	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -62,11 +71,20 @@ func GetRandomWallpaper(cfg *config.Config) (string, error) {
 
 // DownloadWallpaper downloads a wallpaper to a local file.
 func DownloadWallpaper(url string, filepath string) error {
-	resp, err := http.Get(url)
+	// Create HTTP client with timeout
+	client := &http.Client{
+		Timeout: 60 * time.Second, // Longer timeout for downloading images
+	}
+
+	resp, err := client.Get(url)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to download wallpaper: %w", err)
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("download failed with status code %d", resp.StatusCode)
+	}
 
 	out, err := os.Create(filepath)
 	if err != nil {

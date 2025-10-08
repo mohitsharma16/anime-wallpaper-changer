@@ -61,6 +61,11 @@ func main() {
 		fmt.Println("Configuration saved!")
 	}
 
+	// Set default interval if not configured (for old config files)
+	if cfg.ChangeInterval <= 0 {
+		cfg.ChangeInterval = 60 // Default to 60 minutes
+	}
+
 	// Override interval if flag is provided
 	if *intervalFlag > 0 {
 		cfg.ChangeInterval = *intervalFlag
@@ -70,6 +75,12 @@ func main() {
 	if cfg.Autostart {
 		if err := utils.SetupAutostart(); err != nil {
 			log.Printf("Warning: Error setting up autostart: %v", err)
+			fmt.Println("\nNote: On Windows, creating autostart requires administrator privileges.")
+			fmt.Println("To enable autostart: Right-click wallsync.exe → 'Run as administrator' → Run setup again")
+			fmt.Println("Or run manually with: wallsync.exe -daemon")
+			fmt.Println()
+		} else {
+			fmt.Println("✓ Autostart configured successfully")
 		}
 	} else {
 		// If autostart is not enabled, ensure the task is removed

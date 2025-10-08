@@ -1,2 +1,48 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+wallsync
+wallsync.exe
+uninstall
+uninstall.exe
+uninstaller/uninstaller
+uninstaller/uninstaller.exe
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Go workspace file
+go.work
+
+# Dependency directories
+vendor/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Build directories
+dist/
+releases/
+build/
+
+# Logs
+*.log
+
+# Old executables
 anime-wallpaper-changer
 anime-wallpaper-changer.exe
+
+# OS-specific files
+Thumbs.db
+Desktop.ini

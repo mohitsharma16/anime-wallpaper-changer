@@ -1,48 +1,108 @@
-# Anime Wallpaper Changer
+# WallSync
 
-A simple command-line application to automatically change your desktop wallpaper to a random anime wallpaper every time you log in.
+A lightweight background application that automatically changes your desktop wallpaper to random high-quality wallpapers at configurable intervals.
 
 ## Features
 
--   Automatically changes your desktop wallpaper on login.
--   Fetches high-quality anime wallpapers from [Wallhaven](https://wallhaven.cc).
--   Interactive first-time setup to configure your preferences.
--   Cross-platform support for Windows, macOS, and Linux.
--   Option to automatically run on login.
+-   **Automatic wallpaper changes** - Set custom intervals (15 min to daily)
+-   **Background daemon mode** - Runs silently in the background
+-   **Multiple category selection** - Choose from General, Anime, and People wallpapers
+-   **Desktop notifications** - Get notified when wallpaper changes
+-   **Auto-start on login** - Optionally launch on system startup
+-   **Smart caching** - Automatic cleanup of old wallpapers
+-   **Timeout handling** - Robust network error recovery
+-   **Cross-platform** - Windows, macOS, and Linux support
+-   Fetches high-quality wallpapers from [Wallhaven](https://wallhaven.cc)
 
 ## Installation
 
-1.  **Prerequisites:** Make sure you have [Go](https://golang.org/dl/) installed on your system.
+**Quick Build:**
 
-2.  **Build the application:** Open your terminal or command prompt, navigate to the project directory, and run the following command:
+**Windows:**
+```bash
+go build -o wallsync.exe main.go
+go build -o uninstall.exe uninstaller/uninstaller.go
+```
 
-    ```
-    go build
-    ```
+**macOS/Linux:**
+```bash
+go build -o wallsync main.go
+go build -o uninstaller uninstaller/uninstaller.go
+```
 
-    This will create an executable file named `anime-wallpaper-changer` (or `anime-wallpaper-changer.exe` on Windows) in the project directory.
+**For detailed build instructions, cross-compilation, and platform-specific setup, see [BUILD.md](BUILD.md)**
 
 ## Usage
 
-1.  **Run the application:** Run the executable from your terminal:
+### First-Time Setup
 
-    ```
-    ./anime-wallpaper-changer
-    ```
+Run the application for the first time to configure your preferences:
 
-2.  **First-Time Setup:** The first time you run the application, it will guide you through an interactive setup process:
+```bash
+# Windows
+./wallsync.exe
 
-    *   **Choose your favorite categories:** Select the wallpaper categories you want to see (e.g., General, Anime, People).
-    *   **Choose the purity level:** Select the purity level of the wallpapers (e.g., SFW, Sketchy).
-    *   **Run on login:** Choose whether you want the application to run automatically every time you log in.
+# macOS/Linux
+./wallsync
+```
 
-3.  **Enjoy:** The application will now run in the background and change your wallpaper every time you log in based on your preferences.
+You'll be prompted to:
+-   Select wallpaper categories (General, Anime, People)
+-   Choose purity level (SFW, Sketchy, or Both)
+-   Set change interval (15 min, 30 min, 1 hour, 2 hours, 4 hours, or Daily)
+-   Enable/disable auto-start on login
+-   Enable/disable desktop notifications
+
+### Command-Line Options
+
+```bash
+# Run in daemon mode (background service)
+./wallsync -daemon
+
+# Change wallpaper once and exit
+./wallsync -once
+
+# Reconfigure preferences
+./wallsync -reconfig
+
+# Override change interval (in minutes)
+./wallsync -interval 30
+```
+
+### Uninstall
+
+Run the uninstaller to remove WallSync:
+
+```bash
+# Windows
+./uninstall.exe
+
+# macOS/Linux
+./uninstaller
+```
 
 ## Supported Platforms
 
--   Windows
--   macOS
--   Linux (GNOME)
+### ✅ Fully Supported
+
+-   **Windows** - All features working
+-   **macOS** - All features working (notifications via osascript, autostart via LaunchAgent)
+-   **Linux** - All features working with GNOME, KDE Plasma, and XFCE
+    - Notifications via `notify-send`
+    - Autostart via `.desktop` file
+    - Wallpaper changes on GNOME (gsettings), KDE (qdbus), and XFCE (xfconf-query)
+
+### Platform-Specific Notes
+
+**macOS:**
+- Notifications use native macOS notification center
+- Autostart creates LaunchAgent at `~/Library/LaunchAgents/com.wallsync.daemon.plist`
+- Logs available at `~/Library/Logs/wallsync.log`
+
+**Linux:**
+- Requires `notify-send` for notifications (usually pre-installed)
+- Desktop file created at `~/.config/autostart/wallsync.desktop`
+- Automatically detects and supports GNOME, KDE Plasma, and XFCE desktop environments
 
 ## Contributing
 

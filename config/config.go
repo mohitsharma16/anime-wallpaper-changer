@@ -7,8 +7,11 @@ import (
 
 // Config represents the user's preferences.
 type Config struct {
-	Categories []string `json:"categories"`
-	Purity     []string `json:"purity"`
+	Categories      []string `json:"categories"`
+	Purity          []string `json:"purity"`
+	Autostart       bool     `json:"autostart"`
+	ChangeInterval  int      `json:"change_interval"`  // in minutes
+	ShowNotification bool    `json:"show_notification"`
 }
 
 // LoadConfig reads the configuration from a file.
@@ -44,7 +47,10 @@ func SaveConfig(file string, cfg *Config) error {
 
 func defaultConfig() *Config {
 	return &Config{
-		Categories: []string{"100"}, // General, Anime, People
-		Purity:     []string{"100"}, // SFW
+		Categories:       []string{"010"}, // Anime by default
+		Purity:           []string{"100"}, // SFW
+		Autostart:        false,
+		ChangeInterval:   60,               // 60 minutes by default
+		ShowNotification: true,
 	}
 }
